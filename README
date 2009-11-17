@@ -1,3 +1,7 @@
 - Asynchronous pinger written in python -
 
 currently it is not working as you expect, fell free to modify
+
+TODO:
+* add callbacks to apinger.py
+* make aping to read host names from file

@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+
+import apinger, socket
+
+if __name__ == '__main__':
+    hosts = ['ya.ru', 'google.com', 'rbc.ru', 'mail.ru']
+    ips = [ socket.gethostbyname(host) for host in hosts ]
+
+    apinger.loop(ips)
+

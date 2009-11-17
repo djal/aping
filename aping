@@ -2,9 +2,16 @@
 
 import apinger, socket
 
+def printer(ip, rtt):
+    if not rtt:
+        print '%20s %16s\tUNREACHABLE' % (ips[ip], ip)
+    else:
+        print '%20s %16s\t%.3f' % (ips[ip], ip, rtt)
+
+
 if __name__ == '__main__':
     hosts = ['ya.ru', 'google.com', 'rbc.ru', 'mail.ru']
-    ips = [ socket.gethostbyname(host) for host in hosts ]
+    ips = dict( (socket.gethostbyname(host), host) for host in hosts )
 
-    apinger.loop(ips)
+    apinger.loop(ips.keys(), printer)
 

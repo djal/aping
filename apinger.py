@@ -1,7 +1,7 @@
 import os, time, socket, select, signal, icmp
 from heapq import heappush, heappop
 
-def loop(hosts, sleep_interval = 1, timeout_interval = 1):
+def loop(hosts, callback, sleep_interval = 1, timeout_interval = 1):
     sendq = []
     recvq = {}
 
@@ -31,7 +31,8 @@ def loop(hosts, sleep_interval = 1, timeout_interval = 1):
                     rtt = (current_time - time_sent) * 1000
                     #TODO make callback
                     if  r_id == my_id:
-                        print '%16s\t%3s %.3f' % (addr[0], r_seq, rtt)
+                        callback(addr[0], rtt)
+                        #print '%16s\t%3s %.3f' % (addr[0], r_seq, rtt)
                         heappush(sendq, (time.time() + sleep_interval, addr[0]))
                         if addr[0] in recvq:
                             del recvq[addr[0]]
@@ -49,7 +50,8 @@ def loop(hosts, sleep_interval = 1, timeout_interval = 1):
         #TODO optimize here
         for ip in [ host for (host, timeout) in recvq.items() if timeout < current_time ]:
             #TODO make callback
-            print '%16s\ttimeout' % ip
+            callback(ip, None)
+            #print '%16s\ttimeout' % ip
             heappush(sendq, (current_time + sleep_interval, ip))
             del recvq[ip]
 

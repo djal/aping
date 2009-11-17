@@ -29,10 +29,8 @@ def loop(hosts, callback, sleep_interval = 1, timeout_interval = 1):
                 (r_id, r_seq, time_sent) = icmp.disassemble(data)
                 if r_id:
                     rtt = (current_time - time_sent) * 1000
-                    #TODO make callback
                     if  r_id == my_id:
                         callback(addr[0], rtt)
-                        #print '%16s\t%3s %.3f' % (addr[0], r_seq, rtt)
                         heappush(sendq, (time.time() + sleep_interval, addr[0]))
                         if addr[0] in recvq:
                             del recvq[addr[0]]
@@ -49,9 +47,7 @@ def loop(hosts, callback, sleep_interval = 1, timeout_interval = 1):
 
         #TODO optimize here
         for ip in [ host for (host, timeout) in recvq.items() if timeout < current_time ]:
-            #TODO make callback
             callback(ip, None)
-            #print '%16s\ttimeout' % ip
             heappush(sendq, (current_time + sleep_interval, ip))
             del recvq[ip]
 

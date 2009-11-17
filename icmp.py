@@ -23,7 +23,8 @@ def checksum(source_string):
 def assemble(dest_addr, ID, seq, data):
     my_checksum = 0
     header = struct.pack('bbHHH', 8, 0, my_checksum, ID, seq)
-    pdata = cPickle.dumps(data, 2)
+    #pdata = cPickle.dumps(data, 2)
+    pdata = struct.pack('d', data)
     my_checksum = checksum(header + pdata)
     header = struct.pack('bbHHH', 8, 0, socket.htons(my_checksum), ID, seq)
     return header + pdata
@@ -31,6 +32,11 @@ def assemble(dest_addr, ID, seq, data):
 def disassemble(packet):
     icmpHeader = packet[20:28]
     ptype, code, checksum, packetID, sequence = struct.unpack('bbHHH', icmpHeader)
+    try:
+        data = struct.unpack('d', packet[28:])[0]
+    except:
+        ptype = 9999
+
     if ptype == 0 and code == 0:
-        return (packetID, sequence, cPickle.loads(packet[28:]))
+        return (packetID, sequence, data)
     return (None, None, None)
